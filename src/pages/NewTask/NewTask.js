@@ -16,7 +16,12 @@ const NewTask = ({ navigation }) => {
   const [ taskName, setTaskName ] = useState('');
   const [ taskDescription, setTaskDescription ] = useState('');
   const [ taskStatus, setTaskStatus ] = useState('active');
-  const { token, user, id } = navigation.state.params;
+  const { tasks, setTasks, parameters } = navigation.state.params;
+  const { token, user, id } = parameters;
+
+  const updateTasksOnScreen = (newTask) => {
+    setTasks(oldTasksArray => [...oldTasksArray, newTask]);
+  }
 
   const handleNewTask = () => {
     api.post('/tasks', {
@@ -28,12 +33,13 @@ const NewTask = ({ navigation }) => {
         Authorization: `Bearer ${token}`,
       }
     })
-      .then(() => {
+      .then(response => {
+        updateTasksOnScreen(response.data);
         navigation.pop();
       })
       .catch(err => {
         const { message } = err.response.data;
-        ToastAndroid.show(`Unable to register new task - ${message.toLowerCase()}`, ToastAndroid.LONG);
+        ToastAndroid.show(`Não foi possível cadastrar nova tarefa - ${message.toLowerCase()}`, ToastAndroid.LONG);
       });
   };
 

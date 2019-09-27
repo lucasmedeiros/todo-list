@@ -11,7 +11,7 @@ import styles from './styles';
 import api from '../../services/api';
 
 const TaskDetails = ({ navigation }) => {
-  const { task, parameters } = navigation.state.params;
+  const { tasksArray, setTasks, task, parameters } = navigation.state.params;
   const { createdAt, task_id, task_status, task_name, task_description } = task;
   const { token, user, id } = parameters;
 
@@ -54,6 +54,17 @@ const TaskDetails = ({ navigation }) => {
 
   const [_, statusPt] = statuses[task_status];
 
+  const updateTasksOnScreen = (updatedTask, newStatus) => {
+    setTasks(tasksArray.map(item => {
+      let temp = Object.assign({}, item);
+
+      if (item.task_id === parseInt(updatedTask.taskId))
+        temp.task_status = newStatus
+
+      return temp;
+    }));
+  };
+
   const handleChangeStatus = (newStatus) => {
     api.put('/tasks', {
       taskId: task_id,
@@ -63,7 +74,8 @@ const TaskDetails = ({ navigation }) => {
         Authorization: `Bearer ${token}`,
       }
     })
-      .then(() => {
+      .then(response => {
+        updateTasksOnScreen(response.data, newStatus);
         navigation.pop();
       })
       .catch(err => {

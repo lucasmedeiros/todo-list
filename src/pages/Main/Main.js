@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -13,16 +13,10 @@ import api from '../../services/api';
 import styles from './styles';
 
 const Main = ({ navigation }) => {
-  const isCancelled = useRef(false);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token, user, id } = navigation.state.params;
-
-  useEffect(() => {
-    return () => {
-      isCancelled.current = true;
-    }
-  }, []);
+  const parameters = navigation.state.params;
+  const { token, user, id } = parameters;
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -32,14 +26,18 @@ const Main = ({ navigation }) => {
         }
       });
 
-      if (!isCancelled.current) {
-        setTasks(response.data);
-        setLoading(false);
-      }
+      setTasks(response.data);
+      setLoading(false);
     };
 
     fetchTasks();
-  }, [tasks]);
+  }, []);
+
+  // useEffect(() => {
+  //
+  //
+  //   fetchTasks();
+  // }, [tasks]);
 
   const taskPriorityOrder = {
     'pending': 1,
@@ -70,6 +68,8 @@ const Main = ({ navigation }) => {
               key={key}
               keyVal={key}
               task={task}
+              tasksArray={tasks}
+              setTasks={setTasks}
               navigation={navigation} />
           )) : (
             <Text
@@ -81,7 +81,7 @@ const Main = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => { navigation.navigate('NewTask', navigation.state.params); }}
+        onPress={() => { navigation.navigate('NewTask', {tasks, setTasks, parameters}); }}
         activeOpacity={0.7} >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>

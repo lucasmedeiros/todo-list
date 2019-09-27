@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity } from 'react-native';
 import styles from './styles';
 
-const TaskNote = ({ keyVal, task, navigation }) => {
+const TaskNote = ({ keyVal, tasksArray, setTasks, task, navigation }) => {
   const { createdAt, task_status, task_name, task_description } = task;
 
   const convertIntegerValuesToString = (...intValues) => {
@@ -50,7 +50,7 @@ const TaskNote = ({ keyVal, task, navigation }) => {
 
   return(
     <TouchableOpacity
-      onPress={() => { navigation.navigate('TaskDetails', {task, parameters}) }}
+      onPress={() => { navigation.navigate('TaskDetails', { tasksArray, setTasks, task, parameters}) }}
       key={keyVal}
       style={styles.note} >
       <View style={styles.noteContainer}>
