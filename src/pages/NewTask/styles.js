@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 15,
     marginTop: 10,
-    fontSize: 20,
+    fontSize: 17,
   },
   titleInput: {
     height: 46,

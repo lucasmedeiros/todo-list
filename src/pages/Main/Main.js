@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -13,23 +13,32 @@ import api from '../../services/api';
 import styles from './styles';
 
 const Main = ({ navigation }) => {
+  const isCancelled = useRef(false);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token, user, id } = navigation.state.params;
 
   useEffect(() => {
-    const loadTasks = async () => {
+    return () => {
+      isCancelled.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
       const response = await api.get('/tasks', {
         headers: {
           Authorization: `Bearer ${token}`,
         }
       });
 
-      setTasks(response.data);
-      setLoading(false);
+      if (!isCancelled.current) {
+        setTasks(response.data);
+        setLoading(false);
+      }
     };
 
-    loadTasks();
+    fetchTasks();
   }, [tasks]);
 
   const taskPriorityOrder = {
@@ -60,7 +69,8 @@ const Main = ({ navigation }) => {
             <TaskNote
               key={key}
               keyVal={key}
-              task={task} />
+              task={task}
+              navigation={navigation} />
           )) : (
             <Text
               style={styles.noTask}>

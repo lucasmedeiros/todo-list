@@ -46,9 +46,11 @@ const TaskNote = ({ keyVal, task, navigation }) => {
   // task.task_status
 
   const [_, statusPt] = statuses[task_status];
+  const parameters = navigation.state.params;
 
   return(
     <TouchableOpacity
+      onPress={() => { navigation.navigate('TaskDetails', {task, parameters}) }}
       key={keyVal}
       style={styles.note} >
       <View style={styles.noteContainer}>
@@ -60,7 +62,7 @@ const TaskNote = ({ keyVal, task, navigation }) => {
           </View>
         <Text
           style={[styles.noteText, styles.noteTextDescription]}
-          numberOfLines={2} >
+          numberOfLines={1} >
             {task_description}
           </Text>
       </View>

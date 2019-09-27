@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  StatusBar,
 } from 'react-native';
 import api from '../../services/api';
 import styles from './styles';
@@ -49,6 +50,11 @@ const Login = ({ navigation }) => {
 
   return(
     <View style={styles.container}>
+      <StatusBar
+        barStyle='dark-content'
+        hidden={false}
+        backgroundColor="#F5F5F5" />
+
       <TextInput
         placeholder="Username"
         placeholderTextColor="#999"

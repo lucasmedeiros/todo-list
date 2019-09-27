@@ -28,7 +28,7 @@ const NewTask = ({ navigation }) => {
         Authorization: `Bearer ${token}`,
       }
     })
-      .then(response => {
+      .then(() => {
         navigation.pop();
       })
       .catch(err => {
@@ -63,14 +63,15 @@ const NewTask = ({ navigation }) => {
           value={taskDescription}
           onChangeText={setTaskDescription} />
 
-          <RNPickerSelect
-            onValueChange={(value) => setTaskStatus(value)}
-            items={[
-              { label: 'FAZENDO', value: 'active' },
-              { label: 'PENDENTE', value: 'pending' },
-              { label: 'CONCLUÍDA', value: 'finished' },
-            ]}
-          />
+        <RNPickerSelect
+          placeholder={{label: 'Selecione o status da tarefa'}}
+          onValueChange={(value) => setTaskStatus(value)}
+          items={[
+            { label: 'FAZENDO', value: 'active' },
+            { label: 'PENDENTE', value: 'pending' },
+            { label: 'CONCLUÍDA', value: 'finished' },
+          ]}
+        />
 
         <TouchableOpacity
           style={styles.button}
