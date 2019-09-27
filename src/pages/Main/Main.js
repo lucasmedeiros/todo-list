@@ -1,44 +1,87 @@
-import React from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { useState, useEffect } from 'react';
 import {
+  ActivityIndicator,
   SafeAreaView,
-  TouchableOpacity, 
-  View, 
-  Text, 
-  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Text,
 } from 'react-native';
+import TaskNote from '../../components/TaskNote';
+import Toolbar from '../../components/Toolbar';
+import api from '../../services/api';
+import styles from './styles';
 
 const Main = ({ navigation }) => {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { token, user, id } = navigation.state.params;
 
-  const { token } = navigation.state.params;
+  useEffect(() => {
+    const loadTasks = async () => {
+      const response = await api.get('/tasks', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      setTasks(response.data);
+      setLoading(false);
+    };
+
+    loadTasks();
+  }, [tasks]);
+
+  const taskPriorityOrder = {
+    'pending': 1,
+    'active': 2,
+    'finished': 3,
+  };
+
+  const orderTasks = (t1, t2) => taskPriorityOrder[t1.task_status] - taskPriorityOrder[t2.task_status];
 
   return(
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text>Your Tasks</Text>
-      </View>
+      <Toolbar
+        title={'Tarefas'}
+        navigation={navigation} />
+
+      <ScrollView style={styles.scrollContainer} >
+        { loading ? (
+          <ActivityIndicator
+            style={{marginTop: 20}}
+            animating={loading}
+            size="large"
+            color="#0000ff" />
+        ) : tasks.length > 0 ?
+          tasks
+            .sort(orderTasks)
+            .map((task, key) => (
+            <TaskNote
+              key={key}
+              keyVal={key}
+              task={task} />
+          )) : (
+            <Text
+              style={styles.noTask}>
+              Nenhuma tarefa cadastrada...
+            </Text>
+          )}
+      </ScrollView>
+
       <TouchableOpacity
-        onPress={() => {
-          AsyncStorage.clear().then(() => {
-            navigation.navigate('RouterScreen');
-          });
-        }} >
-        <Text>CLEAR</Text>
+        style={styles.addButton}
+        onPress={() => { navigation.navigate('NewTask', navigation.state.params); }}
+        activeOpacity={0.7} >
+        <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
-      <Text>{token}</Text>
-      <View />
     </SafeAreaView>
   );
 }
 
 Main.navigationOptions = {
   title: 'Main',
+  header: null
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }
-});
 
 export default Main;
