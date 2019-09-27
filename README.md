@@ -2,6 +2,8 @@
 
 Um aplicativo de lista de afazeres com React Native, com API feita em Node.js e autenticação via JSON Web Token (JWT).
 
+Demo: [https://youtu.be/GnNE2SjpDwQ](https://youtu.be/GnNE2SjpDwQ)
+
 ## Instalação
 
 Antes de qualquer configuração nesse projeto, você precisa configurar e rodar a API, para que sejam feitas as requisições necessárias. Todas as informações necessárias para tal estão no `README` do [repositório da API](https://github.com/lucasmedeiros/todo-list-backend).
